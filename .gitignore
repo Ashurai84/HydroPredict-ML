@@ -20,3 +20,8 @@ ENV/
 
 # Streamlit temporary data
 .streamlit/
+
+# Documentation & Screenshots (Kept locally only, excluded from GitHub)
+*.docx
+create_documentation_docx.py
+Screenshot*.png
