@@ -214,24 +214,25 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
+# Cross-Version Sklearn Compatibility Shim
+# -----------------------------------------------------------------------------
+import sys
+try:
+    import sklearn.ensemble._gb_losses
+except ModuleNotFoundError:
+    try:
+        from sklearn.ensemble import _loss as _gb_losses
+        sys.modules['sklearn.ensemble._gb_losses'] = _gb_losses
+    except Exception:
+        pass
+
+# -----------------------------------------------------------------------------
 # Load Models & Artifacts
 # -----------------------------------------------------------------------------
 @st.cache_resource
 def load_all_artifacts():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Best Model (Gradient Boosting)
-    with open(os.path.join(base_dir, "models", "best_water_model.pkl"), "rb") as f:
-        gbr_model = pickle.load(f)
-        
-    # Random Forest Model
-    with open(os.path.join(base_dir, "models", "random_forest_model.pkl"), "rb") as f:
-        rf_model = pickle.load(f)
-        
-    # Linear Regression Model
-    with open(os.path.join(base_dir, "models", "linear_model.pkl"), "rb") as f:
-        lr_model = pickle.load(f)
-        
     # Columns & Metrics
     with open(os.path.join(base_dir, "models", "feature_columns.json"), "r") as f:
         feature_cols = json.load(f)
@@ -240,6 +241,38 @@ def load_all_artifacts():
         
     # Cleaned Data
     df_clean = pd.read_csv(os.path.join(base_dir, "data", "water_consumption_cleaned.csv"))
+    
+    gbr_model, rf_model, lr_model = None, None, None
+    
+    # Try loading existing pickle files
+    try:
+        with open(os.path.join(base_dir, "models", "best_water_model.pkl"), "rb") as f:
+            gbr_model = pickle.load(f)
+        with open(os.path.join(base_dir, "models", "random_forest_model.pkl"), "rb") as f:
+            rf_model = pickle.load(f)
+        with open(os.path.join(base_dir, "models", "linear_model.pkl"), "rb") as f:
+            lr_model = pickle.load(f)
+    except Exception:
+        # Cross-version compatibility fallback: train in memory if pickle version differs
+        from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
+        from sklearn.linear_model import LinearRegression
+        
+        df_train = df_clean.copy()
+        if 'Date' in df_train.columns:
+            df_train['Date'] = pd.to_datetime(df_train['Date'])
+            df_train['Month'] = df_train['Date'].dt.month
+        data = pd.get_dummies(df_train.drop(columns=['Date', 'Day_of_Week']), drop_first=True)
+        X = data[feature_cols]
+        y = data['Water_Consumption_Liters']
+        
+        gbr_model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.08, max_depth=4, random_state=42)
+        gbr_model.fit(X, y)
+        
+        rf_model = RandomForestRegressor(n_estimators=100, max_depth=8, random_state=42)
+        rf_model.fit(X, y)
+        
+        lr_model = LinearRegression()
+        lr_model.fit(X, y)
     
     models_dict = {
         "Gradient Boosting (Best Model)": (gbr_model, metrics["Gradient Boosting"]),
