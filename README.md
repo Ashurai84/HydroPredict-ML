@@ -92,7 +92,6 @@ We trained and benchmarked 5 distinct machine learning models on a 20% out-of-sa
 ```
 HydroPredict-ML/
 ├── Case_Study_72_Water_Consumption_Prediction.ipynb  # End-to-end executed Jupyter Notebook
-├── Case_Study_72_Water_Consumption_Presentation.pptx # Project presentation slide deck
 ├── app.py                                            # Streamlit interactive web dashboard
 ├── requirements.txt                                  # Python dependencies
 ├── .gitignore                                        # Ignored files & caches
