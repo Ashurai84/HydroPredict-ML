@@ -1,0 +1,14 @@
+[
+  "Temperature_C",
+  "Humidity_Pct",
+  "Rainfall_mm",
+  "Is_Weekend",
+  "Occupants",
+  "Past_Day_Consumption_Liters",
+  "Month",
+  "Household_Type_Commercial",
+  "Household_Type_Villa",
+  "Season_Spring",
+  "Season_Summer",
+  "Season_Winter"
+]

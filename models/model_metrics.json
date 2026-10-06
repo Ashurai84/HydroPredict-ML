@@ -1,0 +1,32 @@
+{
+  "Linear Regression": {
+    "R2_Score": 0.9466,
+    "MAE_Liters": 49.7,
+    "RMSE_Liters": 67.35,
+    "MAPE_Pct": 10.0
+  },
+  "Ridge Regression": {
+    "R2_Score": 0.9466,
+    "MAE_Liters": 49.76,
+    "RMSE_Liters": 67.33,
+    "MAPE_Pct": 10.02
+  },
+  "Decision Tree": {
+    "R2_Score": 0.965,
+    "MAE_Liters": 40.46,
+    "RMSE_Liters": 54.54,
+    "MAPE_Pct": 7.92
+  },
+  "Random Forest": {
+    "R2_Score": 0.9868,
+    "MAE_Liters": 24.31,
+    "RMSE_Liters": 33.5,
+    "MAPE_Pct": 4.8
+  },
+  "Gradient Boosting": {
+    "R2_Score": 0.9901,
+    "MAE_Liters": 20.45,
+    "RMSE_Liters": 28.92,
+    "MAPE_Pct": 4.15
+  }
+}
